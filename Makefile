@@ -69,6 +69,24 @@ DEPFLAGS	=	-MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
 
 RM			=	/bin/rm -rf
 
+# Detect operating system
+OS := $(shell uname -s)
+
+# Use GNU sed syntax if on Linux, BSD syntax if on macOS
+ifeq ($(OS),Linux)
+    SED = sed
+endif
+ifeq ($(OS),Darwin)
+    SED = gsed
+endif
+
+# Check if GNU sed is installed on macOS
+ifeq ($(OS),Darwin)
+    ifeq ($(shell command -v gsed 2> /dev/null),)
+        $(error "GNU sed (gsed) not installed. Please install it with 'brew install gnu-sed'")
+    endif
+endif
+
 # FG COLORS
 DEFAULT		=	\033[0m
 BLACK		=	\033[1;30m
